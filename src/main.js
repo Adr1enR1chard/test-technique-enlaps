@@ -71,7 +71,7 @@ gltfLoader.load("assets/models/scene.gltf", function (gltf) {
     spaceShip.position.y = -3;
     spaceShip.position.z = 10;
 
-    // Enable shadows for all children meshes.
+    // Enable shadows for all child meshes.
     spaceShip.traverse(function (node) {
         if (node.isMesh) {
             node.castShadow = true;
