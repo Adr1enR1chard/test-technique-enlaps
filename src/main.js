@@ -29,6 +29,8 @@ const earth = new THREE.Mesh(
 )
 scene.add(earth);
 
+const earthRotationRate = 0.6;
+
 
 // Moon
 const moon = new THREE.Mesh(
@@ -58,6 +60,17 @@ directionalLight.position.x = 6;
 scene.add(directionalLight);
 
 
+/***********/
+/*Animation*/
+/***********/
+const clock = new THREE.Clock(true);
+var delta = 0;
+
 function animate() {
+    delta = clock.getDelta();
+
+    /*Earth movements*/
+    earth.rotateY(earthRotationRate * delta);
+
     renderer.render(scene, camera);
 }
