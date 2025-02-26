@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { GLTFLoader } from 'three/examples/jsm/Addons.js';
 
 /****************/
 /*Scene defaults*/
@@ -17,11 +18,14 @@ camera.position.x = 2;
 
 const _controls = new OrbitControls(camera, renderer.domElement);
 
+const animationMixer = new THREE.AnimationMixer();
+
 
 /********/
 /*Meshes*/
 /********/
 const textureLoader = new THREE.TextureLoader();
+const gltfLoader = new GLTFLoader();
 
 // Earth
 const earthRotationRate = 0.6;
@@ -58,11 +62,32 @@ scene.add(sun);
 
 sun.position.x = 6;
 
+//Space ship
+let spaceShip;
+gltfLoader.load("assets/models/scene.gltf", function (gltf) {
+    spaceShip = gltf.scene;
+    scene.add(spaceShip);
+
+    spaceShip.position.y = -3;
+    spaceShip.position.z = 10;
+
+    // Enable shadows for all children meshes.
+    spaceShip.traverse(function (node) {
+        if (node.isMesh) {
+            node.castShadow = true;
+            node.receiveShadow = true;
+        };
+    });
+
+    animationMixer.clipAction(gltf.animations[0], gltf.scene).play();
+});
+
+
 /*******/
 /*Lights*/
 /*******/
 // Ambient light
-const ambientLight = new THREE.AmbientLight(new THREE.Color('white'), 0.1);
+const ambientLight = new THREE.AmbientLight(new THREE.Color('white'), 0.01);
 scene.add(ambientLight);
 
 // Directional Light
@@ -120,6 +145,7 @@ function animate() {
     sun.position.add(sunTranslation);
     directionalLight.position.add(sunTranslation);
 
+    animationMixer.update(1 / 60);
     renderer.render(scene, camera);
 }
 
