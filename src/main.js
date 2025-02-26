@@ -37,9 +37,12 @@ const moon = new THREE.Mesh(
     new THREE.TorusGeometry(0.2, 0.08),
     new THREE.MeshStandardMaterial({ map: textureLoader.load('assets/textures/moon.jpg') }),
 )
-moon.position.x = 2;
 scene.add(moon);
 
+const moonSpeed = 1;
+const moonDistanceFromEarth = 2;
+
+moon.position.x = moonDistanceFromEarth;
 
 // Sun
 const sun = new THREE.Mesh(
@@ -71,6 +74,12 @@ function animate() {
 
     /*Earth movements*/
     earth.rotateY(earthRotationRate * delta);
+
+    /*Moon movements*/
+    let moonAngle = clock.getElapsedTime() * moonSpeed;
+    moon.position.x = Math.cos(moonAngle) * moonDistanceFromEarth;
+    moon.position.z = Math.sin(moonAngle) * moonDistanceFromEarth;
+    moon.rotation.y = - moonAngle + Math.PI / 2;
 
     renderer.render(scene, camera);
 }
