@@ -78,6 +78,17 @@ directionalLight.castShadow = true;
 const clock = new THREE.Clock(true);
 var delta = 0;
 
+/**
+ * A dictionary that stores whether a key is pressed.
+ * 
+ * @example
+ * inputs['ArrowUp'] = true => Up arrow is pressed
+ * 
+ * */
+var inputs = {};
+
+const sunSpeed = 2;
+
 function animate() {
     delta = clock.getDelta();
 
@@ -85,10 +96,63 @@ function animate() {
     earth.rotateY(earthRotationRate * delta);
 
     /*Moon movements*/
-    let moonAngle = clock.getElapsedTime() * moonSpeed;
+    var moonAngle = clock.getElapsedTime() * moonSpeed;
     moon.position.x = Math.cos(moonAngle) * moonDistanceFromEarth;
     moon.position.z = Math.sin(moonAngle) * moonDistanceFromEarth;
     moon.rotation.y = - moonAngle + Math.PI / 2;
 
+    /*Sun movements*/
+    var sunDirection = new THREE.Vector3();
+    if (inputs['ArrowUp']) {
+        sunDirection.y = 1;
+    } else if (inputs['ArrowDown']) {
+        sunDirection.y = -1;
+    }
+
+    if (inputs['ArrowRight']) {
+        sunDirection.x = 1;
+    } else if (inputs['ArrowLeft']) {
+        sunDirection.x = -1;
+    }
+
+    var sunTranslation = sunDirection.normalize().multiplyScalar(sunSpeed * delta);
+
+    sun.position.add(sunTranslation);
+    directionalLight.position.add(sunTranslation);
+
     renderer.render(scene, camera);
 }
+
+/***************/
+/*Input gesture*/
+/***************/
+
+document.addEventListener('keydown', function (ev) {
+    if (ev.key == 'ArrowUp') {
+        inputs['ArrowUp'] = true;
+    }
+    if (ev.key == 'ArrowDown') {
+        inputs['ArrowDown'] = true;
+    }
+    if (ev.key == 'ArrowRight') {
+        inputs['ArrowRight'] = true;
+    }
+    if (ev.key == 'ArrowLeft') {
+        inputs['ArrowLeft'] = true;
+    }
+});
+
+document.addEventListener('keyup', function (ev) {
+    if (ev.key == 'ArrowUp') {
+        inputs['ArrowUp'] = false;
+    }
+    if (ev.key == 'ArrowDown') {
+        inputs['ArrowDown'] = false;
+    }
+    if (ev.key == 'ArrowRight') {
+        inputs['ArrowRight'] = false;
+    }
+    if (ev.key == 'ArrowLeft') {
+        inputs['ArrowLeft'] = false;
+    }
+});
