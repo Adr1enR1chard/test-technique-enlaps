@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 /****************/
 /*Scene defaults*/
@@ -13,18 +14,23 @@ const camera = new THREE.PerspectiveCamera(70, 900 / 600);
 camera.position.z = 5;
 camera.position.x = 2;
 
+const controls = new OrbitControls(camera, renderer.domElement);
+
 
 /********/
 /*Meshes*/
 /********/
 const textureLoader = new THREE.TextureLoader();
 
+// Earth
 const earth = new THREE.Mesh(
     new THREE.SphereGeometry(1),
     new THREE.MeshStandardMaterial({ map: textureLoader.load('assets/textures/earth.jpg') }),
 )
 scene.add(earth);
 
+
+// Moon
 const moon = new THREE.Mesh(
     new THREE.TorusGeometry(0.2, 0.08),
     new THREE.MeshStandardMaterial({ map: textureLoader.load('assets/textures/moon.jpg') }),
@@ -32,6 +38,8 @@ const moon = new THREE.Mesh(
 moon.position.x = 2;
 scene.add(moon);
 
+
+// Sun
 const sun = new THREE.Mesh(
     new THREE.BoxGeometry(3, 3, 3),
     new THREE.MeshBasicMaterial({ color: new THREE.Color('lightyellow') }),
